@@ -2,6 +2,7 @@ from typing import Tuple
 
 from flask import Flask, request, jsonify, Response, Blueprint
 
+from db import db
 from utils import parse_request, get_data, check_requests, run_request
 
 main_bp = Blueprint('main', __name__)
@@ -30,3 +31,17 @@ def perform_query() -> Tuple[Response, int]:
         return jsonify('Ошибка при обработке запроса; неправильное значение'), 400
 
     return jsonify(data), 200
+
+@main_bp.route('/test_db')
+def test_db():
+    result = db.session.execute(
+        '''
+        SELECT 1
+        '''
+    ).scalar()
+
+    return jsonify(
+        {
+            'result': result,
+        }
+    )
